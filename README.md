@@ -25,9 +25,11 @@ The rough steps for completing this goal are:
 2. Declare and instantiate the BRAM module in this firmware
 3. Create a counter that counts from 0 to the depth of the BRAM
 4. Create a process controlling a FSM and use the counter and the signals below to control reading and writing to the BRAM
+   
    NOTE: See below for a predefined FSM type you can use
 4.b. (optional but recommended) Create a separate counter that controls state transitions in the FSM
 5. Run the simulation and examine the behavior noticed by the firmware
+   
    NOTE: Simulation appears to be failing the first time it is ran. Please try again and reach out to me (Anders) on Skype if it continues to fail after the second attempt.
 5.b. Debug any issues and iteratively improve the firmware
 6. (optional but recommended) Try and generate the bistream
