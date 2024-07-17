@@ -1,12 +1,25 @@
 # fsm_firmware_project
 
 The goal of this project is to make a finite state machine that writes and reads data from the BRAM
+
+To get started, please clone the repository using the commands:
+
+```
+git@github.com:andersbarzdukas/fsm_firmware_project.git
+cd fsm_firmware_project
+git branch -b <YOUR NAME>_development
+git push -u origin <YOUR NAME>_development
+git checkout <YOUR NAME>_development
+```
+
+Now open vivado and please follow the instructions below. These instructions, along with the starter code, should help you create firmware that reads to and writes from a simple single port BRAM.
+
 The rough steps for completing this goal are:
 1. Create and buffer all clocks (done for you)
 2. Declare and instantiate the BRAM module in this firmware
 3. Create a counter that counts from 0 to the depth of the BRAM
 4. Create a process controlling a FSM and use the counter and the signals below to control reading and writing to the BRAM
-NOTE: See below for a predefined FSM type you can use
+   NOTE: See below for a predefined FSM type you can use
 4.b. (optional but recommended) Create a separate counter that controls state transitions in the FSM
 5. Run the simulation and examine the behavior noticed by the firmware
 5.b. Debug any issues and iteratively improve the firmware
