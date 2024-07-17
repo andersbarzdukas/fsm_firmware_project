@@ -28,6 +28,7 @@ The rough steps for completing this goal are:
    NOTE: See below for a predefined FSM type you can use
 4.b. (optional but recommended) Create a separate counter that controls state transitions in the FSM
 5. Run the simulation and examine the behavior noticed by the firmware
+   NOTE: Simulation appears to be failing the first time it is ran. Please try again and reach out to me (Anders) on Skype if it continues to fail after the second attempt.
 5.b. Debug any issues and iteratively improve the firmware
 6. (optional but recommended) Try and generate the bistream
 7. (extra) Create an ILA to look at the various signals
