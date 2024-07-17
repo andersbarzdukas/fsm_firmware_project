@@ -7,7 +7,7 @@ To get started, please clone the repository using the commands:
 ```
 git clone git@github.com:andersbarzdukas/fsm_firmware_project.git
 cd fsm_firmware_project
-git branch -b <YOUR NAME>_development
+git branch <YOUR NAME>_development
 git push -u origin <YOUR NAME>_development
 git checkout <YOUR NAME>_development
 ```
