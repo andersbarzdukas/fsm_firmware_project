@@ -5,12 +5,18 @@ The goal of this project is to make a finite state machine that writes and reads
 To get started, please clone the repository using the commands:
 
 ```
-git@github.com:andersbarzdukas/fsm_firmware_project.git
+git clone git@github.com:andersbarzdukas/fsm_firmware_project.git
 cd fsm_firmware_project
 git branch -b <YOUR NAME>_development
 git push -u origin <YOUR NAME>_development
 git checkout <YOUR NAME>_development
 ```
+if the checkout option above does not work, please try the following below.
+
+```
+git clone https://github.com/andersbarzdukas/fsm_firmware_project.git
+```
+
 
 Now open vivado and please follow the instructions below. These instructions, along with the starter code, should help you create firmware that reads to and writes from a simple single port BRAM.
 
