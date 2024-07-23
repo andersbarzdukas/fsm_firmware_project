@@ -40,19 +40,21 @@ architecture Behavioral of fsm_firmware_project_tb is
 
 --Defining a clk signal and giving it an initial value
 signal clk : std_logic := '0';
+signal nclk : std_logic := '0';
 
 --Declaring top file as a component
 component fsm_firmware_project_top
-port(clk : std_logic);
+port(clk_p : std_logic; clk_n : std_logic);
 end component;
 
 begin
 
 --Creates a clock that alternates every 20 ns
 clk <= not clk after 100 ns;
+nclk <= not clk;
 
 --Instatiates the top file in this simulation file
-u_fsm_firmware_project_top : fsm_firmware_project_top port map(clk => clk);
+u_fsm_firmware_project_top : fsm_firmware_project_top port map(clk_p => clk, clk_n => nclk);
 
 
 
