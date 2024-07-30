@@ -49,7 +49,7 @@ end component;
 begin
 
 --Creates a clock that alternates every 20 ns
-clk <= not clk after 100 ns;
+clk <= not clk after 20 ns;
 
 --Instatiates the top file in this simulation file
 u_fsm_firmware_project_top : fsm_firmware_project_top port map(clk => clk);
