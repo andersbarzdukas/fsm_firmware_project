@@ -1,0 +1,35 @@
+#Vivado Ignore
+
+*.sim/
+*.runs/
+*.ip_user_files/
+*.hw/
+*.cache/
+
+*.jou
+*.log
+*.debug
+*.str
+*.zip
+*.tmp
+*.rst
+*.os
+*.js
+*.pb
+*.dcp
+*.hwdef
+*.vds
+*.veo
+*.wdf
+*.vdi
+*.dmp
+*.rpx
+*.rpt
+*_stub.v
+*_stub.vhdl
+*_funcsim.v
+*_funcsim.vhdl
+
+### Other ###
+*~
+*#
