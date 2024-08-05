@@ -12,12 +12,12 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="29999988fs"></ZoomStartTime>
-      <ZoomEndTime time="30000003fs"></ZoomEndTime>
-      <Cursor1Time time="29999994fs"></Cursor1Time>
+      <ZoomStartTime time="17000000fs"></ZoomStartTime>
+      <ZoomEndTime time="24505001fs"></ZoomEndTime>
+      <Cursor1Time time="17455000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="116"></NameColumnWidth>
+      <NameColumnWidth column_width="112"></NameColumnWidth>
       <ValueColumnWidth column_width="58"></ValueColumnWidth>
    </column_width_setting>
    <WVObjectSize size="36" />
@@ -93,6 +93,14 @@
       <obj_property name="ElementShortName">DOUTA[15:0]</obj_property>
       <obj_property name="ObjectShortName">DOUTA[15:0]</obj_property>
    </wvobject>
+   <wvobject fp_name="/fsm_firmware_project_tb/u_fsm_firmware_project_top/data_out" type="array">
+      <obj_property name="ElementShortName">data_out[15:0]</obj_property>
+      <obj_property name="ObjectShortName">data_out[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/fsm_firmware_project_tb/u_fsm_firmware_project_top/dav_4" type="logic">
+      <obj_property name="ElementShortName">dav_4</obj_property>
+      <obj_property name="ObjectShortName">dav_4</obj_property>
+   </wvobject>
    <wvobject fp_name="/fsm_firmware_project_tb/u_fsm_firmware_project_top/NOT_COUNTING" type="logic">
       <obj_property name="ElementShortName">NOT_COUNTING</obj_property>
       <obj_property name="ObjectShortName">NOT_COUNTING</obj_property>
@@ -145,10 +153,6 @@
       <obj_property name="ElementShortName">hold_en_2</obj_property>
       <obj_property name="ObjectShortName">hold_en_2</obj_property>
    </wvobject>
-   <wvobject fp_name="/fsm_firmware_project_tb/u_fsm_firmware_project_top/data_out" type="array">
-      <obj_property name="ElementShortName">data_out[15:0]</obj_property>
-      <obj_property name="ObjectShortName">data_out[15:0]</obj_property>
-   </wvobject>
    <wvobject fp_name="/fsm_firmware_project_tb/u_fsm_firmware_project_top/dav_1" type="logic">
       <obj_property name="ElementShortName">dav_1</obj_property>
       <obj_property name="ObjectShortName">dav_1</obj_property>
@@ -160,9 +164,5 @@
    <wvobject fp_name="/fsm_firmware_project_tb/u_fsm_firmware_project_top/dav_3" type="logic">
       <obj_property name="ElementShortName">dav_3</obj_property>
       <obj_property name="ObjectShortName">dav_3</obj_property>
-   </wvobject>
-   <wvobject fp_name="/fsm_firmware_project_tb/u_fsm_firmware_project_top/dav_4" type="logic">
-      <obj_property name="ElementShortName">dav_4</obj_property>
-      <obj_property name="ObjectShortName">dav_4</obj_property>
    </wvobject>
 </wave_config>
