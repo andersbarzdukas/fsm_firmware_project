@@ -6,6 +6,10 @@
 *.hw/
 *.cache/
 
+### The following 2 lines looks in the 'ip' directory and ignores all except the .xci file
+fsm_firmware_project.srcs/sources_1/ip/
+!*.xci
+
 *.jou
 *.log
 *.debug

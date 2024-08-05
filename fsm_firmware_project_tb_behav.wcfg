@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="fsm_firmware_project_tb_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="fsm_firmware_project_tb" />
+            <top_module name="glbl" />
+            <top_module name="utilities" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="29999988fs"></ZoomStartTime>
+      <ZoomEndTime time="30000003fs"></ZoomEndTime>
+      <Cursor1Time time="29999994fs"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="116"></NameColumnWidth>
+      <ValueColumnWidth column_width="58"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="36" />
+   <wvobject fp_name="/fsm_firmware_project_tb/clk" type="logic">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/fsm_firmware_project_tb/nclk" type="logic">
+      <obj_property name="ElementShortName">nclk</obj_property>
+      <obj_property name="ObjectShortName">nclk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/fsm_firmware_project_tb/reset" type="logic">
+      <obj_property name="ElementShortName">reset</obj_property>
+      <obj_property name="ObjectShortName">reset</obj_property>
+   </wvobject>
+   <wvobject fp_name="/fsm_firmware_project_tb/start" type="logic">
+      <obj_property name="ElementShortName">start</obj_property>
+      <obj_property name="ObjectShortName">start</obj_property>
+   </wvobject>
+   <wvobject fp_name="/fsm_firmware_project_tb/STATE_MACH" type="other">
+      <obj_property name="ElementShortName">STATE_MACH</obj_property>
+      <obj_property name="ObjectShortName">STATE_MACH</obj_property>
+   </wvobject>
+   <wvobject fp_name="/fsm_firmware_project_tb/u_fsm_firmware_project_top/clk_p" type="logic">
+      <obj_property name="ElementShortName">clk_p</obj_property>
+      <obj_property name="ObjectShortName">clk_p</obj_property>
+   </wvobject>
+   <wvobject fp_name="/fsm_firmware_project_tb/u_fsm_firmware_project_top/clk_n" type="logic">
+      <obj_property name="ElementShortName">clk_n</obj_property>
+      <obj_property name="ObjectShortName">clk_n</obj_property>
+   </wvobject>
+   <wvobject fp_name="/fsm_firmware_project_tb/u_fsm_firmware_project_top/reset_signal" type="logic">
+      <obj_property name="ElementShortName">reset_signal</obj_property>
+      <obj_property name="ObjectShortName">reset_signal</obj_property>
+   </wvobject>
+   <wvobject fp_name="/fsm_firmware_project_tb/u_fsm_firmware_project_top/start_signal" type="logic">
+      <obj_property name="ElementShortName">start_signal</obj_property>
+      <obj_property name="ObjectShortName">start_signal</obj_property>
+   </wvobject>
+   <wvobject fp_name="/fsm_firmware_project_tb/u_fsm_firmware_project_top/fsmstate" type="other">
+      <obj_property name="ElementShortName">fsmstate</obj_property>
+      <obj_property name="ObjectShortName">fsmstate</obj_property>
+   </wvobject>
+   <wvobject fp_name="/fsm_firmware_project_tb/u_fsm_firmware_project_top/clk_buf" type="logic">
+      <obj_property name="ElementShortName">clk_buf</obj_property>
+      <obj_property name="ObjectShortName">clk_buf</obj_property>
+   </wvobject>
+   <wvobject fp_name="/fsm_firmware_project_tb/u_fsm_firmware_project_top/clk_unbuf" type="logic">
+      <obj_property name="ElementShortName">clk_unbuf</obj_property>
+      <obj_property name="ObjectShortName">clk_unbuf</obj_property>
+   </wvobject>
+   <wvobject fp_name="/fsm_firmware_project_tb/u_fsm_firmware_project_top/RSTA" type="logic">
+      <obj_property name="ElementShortName">RSTA</obj_property>
+      <obj_property name="ObjectShortName">RSTA</obj_property>
+   </wvobject>
+   <wvobject fp_name="/fsm_firmware_project_tb/u_fsm_firmware_project_top/ENA" type="logic">
+      <obj_property name="ElementShortName">ENA</obj_property>
+      <obj_property name="ObjectShortName">ENA</obj_property>
+   </wvobject>
+   <wvobject fp_name="/fsm_firmware_project_tb/u_fsm_firmware_project_top/WEA" type="array">
+      <obj_property name="ElementShortName">WEA[0:0]</obj_property>
+      <obj_property name="ObjectShortName">WEA[0:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/fsm_firmware_project_tb/u_fsm_firmware_project_top/ADDRA" type="array">
+      <obj_property name="ElementShortName">ADDRA[3:0]</obj_property>
+      <obj_property name="ObjectShortName">ADDRA[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/fsm_firmware_project_tb/u_fsm_firmware_project_top/DINA" type="array">
+      <obj_property name="ElementShortName">DINA[15:0]</obj_property>
+      <obj_property name="ObjectShortName">DINA[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/fsm_firmware_project_tb/u_fsm_firmware_project_top/DOUTA" type="array">
+      <obj_property name="ElementShortName">DOUTA[15:0]</obj_property>
+      <obj_property name="ObjectShortName">DOUTA[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/fsm_firmware_project_tb/u_fsm_firmware_project_top/NOT_COUNTING" type="logic">
+      <obj_property name="ElementShortName">NOT_COUNTING</obj_property>
+      <obj_property name="ObjectShortName">NOT_COUNTING</obj_property>
+   </wvobject>
+   <wvobject fp_name="/fsm_firmware_project_tb/u_fsm_firmware_project_top/COUNTER_RESET" type="logic">
+      <obj_property name="ElementShortName">COUNTER_RESET</obj_property>
+      <obj_property name="ObjectShortName">COUNTER_RESET</obj_property>
+   </wvobject>
+   <wvobject fp_name="/fsm_firmware_project_tb/u_fsm_firmware_project_top/COUNTER_SIGNAL" type="array">
+      <obj_property name="ElementShortName">COUNTER_SIGNAL[3:0]</obj_property>
+      <obj_property name="ObjectShortName">COUNTER_SIGNAL[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/fsm_firmware_project_tb/u_fsm_firmware_project_top/MAX_ADDR_REACHED" type="logic">
+      <obj_property name="ElementShortName">MAX_ADDR_REACHED</obj_property>
+      <obj_property name="ObjectShortName">MAX_ADDR_REACHED</obj_property>
+   </wvobject>
+   <wvobject fp_name="/fsm_firmware_project_tb/u_fsm_firmware_project_top/FSM_STATE" type="other">
+      <obj_property name="ElementShortName">FSM_STATE</obj_property>
+      <obj_property name="ObjectShortName">FSM_STATE</obj_property>
+   </wvobject>
+   <wvobject fp_name="/fsm_firmware_project_tb/u_fsm_firmware_project_top/NEXT_STATE" type="other">
+      <obj_property name="ElementShortName">NEXT_STATE</obj_property>
+      <obj_property name="ObjectShortName">NEXT_STATE</obj_property>
+   </wvobject>
+   <wvobject fp_name="/fsm_firmware_project_tb/u_fsm_firmware_project_top/wait_1" type="logic">
+      <obj_property name="ElementShortName">wait_1</obj_property>
+      <obj_property name="ObjectShortName">wait_1</obj_property>
+   </wvobject>
+   <wvobject fp_name="/fsm_firmware_project_tb/u_fsm_firmware_project_top/wait_2" type="logic">
+      <obj_property name="ElementShortName">wait_2</obj_property>
+      <obj_property name="ObjectShortName">wait_2</obj_property>
+   </wvobject>
+   <wvobject fp_name="/fsm_firmware_project_tb/u_fsm_firmware_project_top/wait_3" type="logic">
+      <obj_property name="ElementShortName">wait_3</obj_property>
+      <obj_property name="ObjectShortName">wait_3</obj_property>
+   </wvobject>
+   <wvobject fp_name="/fsm_firmware_project_tb/u_fsm_firmware_project_top/wait_4" type="logic">
+      <obj_property name="ElementShortName">wait_4</obj_property>
+      <obj_property name="ObjectShortName">wait_4</obj_property>
+   </wvobject>
+   <wvobject fp_name="/fsm_firmware_project_tb/u_fsm_firmware_project_top/wait_5" type="logic">
+      <obj_property name="ElementShortName">wait_5</obj_property>
+      <obj_property name="ObjectShortName">wait_5</obj_property>
+   </wvobject>
+   <wvobject fp_name="/fsm_firmware_project_tb/u_fsm_firmware_project_top/hold_en_1" type="logic">
+      <obj_property name="ElementShortName">hold_en_1</obj_property>
+      <obj_property name="ObjectShortName">hold_en_1</obj_property>
+   </wvobject>
+   <wvobject fp_name="/fsm_firmware_project_tb/u_fsm_firmware_project_top/hold_en_2" type="logic">
+      <obj_property name="ElementShortName">hold_en_2</obj_property>
+      <obj_property name="ObjectShortName">hold_en_2</obj_property>
+   </wvobject>
+   <wvobject fp_name="/fsm_firmware_project_tb/u_fsm_firmware_project_top/data_out" type="array">
+      <obj_property name="ElementShortName">data_out[15:0]</obj_property>
+      <obj_property name="ObjectShortName">data_out[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/fsm_firmware_project_tb/u_fsm_firmware_project_top/dav_1" type="logic">
+      <obj_property name="ElementShortName">dav_1</obj_property>
+      <obj_property name="ObjectShortName">dav_1</obj_property>
+   </wvobject>
+   <wvobject fp_name="/fsm_firmware_project_tb/u_fsm_firmware_project_top/dav_2" type="logic">
+      <obj_property name="ElementShortName">dav_2</obj_property>
+      <obj_property name="ObjectShortName">dav_2</obj_property>
+   </wvobject>
+   <wvobject fp_name="/fsm_firmware_project_tb/u_fsm_firmware_project_top/dav_3" type="logic">
+      <obj_property name="ElementShortName">dav_3</obj_property>
+      <obj_property name="ObjectShortName">dav_3</obj_property>
+   </wvobject>
+   <wvobject fp_name="/fsm_firmware_project_tb/u_fsm_firmware_project_top/dav_4" type="logic">
+      <obj_property name="ElementShortName">dav_4</obj_property>
+      <obj_property name="ObjectShortName">dav_4</obj_property>
+   </wvobject>
+</wave_config>
