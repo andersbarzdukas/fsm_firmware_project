@@ -65,7 +65,11 @@ SIGNAL ADDRA: STD_LOGIC_VECTOR(3 DOWNTO 0) := (OTHERS => '0');
 SIGNAL DINA: STD_LOGIC_VECTOR(15 DOWNTO 0) := (OTHERS => '0');
 SIGNAL DOUTA: STD_LOGIC_VECTOR(15 DOWNTO 0);
 
+SIGNAL VIO_RESET: STD_LOGIC_VECTOR(0 DOWNTO 0);
+
 SIGNAL COUNTER_SIGNAL: STD_LOGIC_VECTOR(3 DOWNTO 0) := (OTHERS => '0');
+
+SIGNAL ILA_PROBE_2 : STD_LOGIC_VECTOR(15 DOWNTO 0) := (OTHERS => '0');
 
 --Declaration of FSM type. In VHDL you can define your own type and the values they may take
 --For information about this please see: https://fpgatutorial.com/vhdl-records-arrays-and-custom-types/
@@ -86,6 +90,21 @@ COMPONENT blk_mem_gen_0
   );
 END COMPONENT;
 
+COMPONENT vio_0
+  PORT(
+    CLK : IN STD_LOGIC;
+    PROBE_OUT0 : OUT STD_LOGIC_VECTOR(0 DOWNTO 0)
+  );
+END COMPONENT;
+
+COMPONENT ila_0
+  PORT(
+    CLK : IN STD_LOGIC;
+    PROBE0 : IN STD_LOGIC_VECTOR(15 downto 0);
+    PROBE1 : IN STD_LOGIC_VECTOR(15 downto 0);
+    PROBE2 : IN STD_LOGIC_VECTOR(15 downto 0)
+  );
+END COMPONENT;
 
 begin
 
@@ -106,8 +125,30 @@ port map(
   DOUTA => DOUTA,
   CLKA => CLK_BUF
 );
+
+u_ila_0 : ila_0
+port map(
+     clk => clk_buf,
+     probe0 => DINA,
+     probe1 => DOUTA,
+     probe2 => ila_probe_2
+);
+
+u_vio_0 :vio_0
+port map(
+   clk => clk_buf, 
+   --probe_out0 => RSTA
+   probe_out0 => vio_reset
+);
  
- 
+ila_probe_2(3 downto 0) <= ADDRA;
+ila_probe_2(4 downto 4) <= wea;
+ila_probe_2(5) <= ena;
+
+ila_probe_2(7) <= RSTA;
+ila_probe_2(8) <= vio_reset(0);
+--Add other signals
+
 --Want a process that counts from 0 to the depth of the BRAM
 --Also connect the counter value to signals that will be incremented
 counter_address : process(clk_buf) 
@@ -121,7 +162,7 @@ begin
   --Within this if statement add the logic for the counter
   if(rising_edge(clk_buf)) then 
      -- Counter should reset when the RSTA signal is received
-     if RSTA = '1' then
+     if RSTA = '1' or vio_reset(0) = '1' then
              counter := (others => '0');
      else  -- Counter will count up for each clock cycle
              counter := std_logic_vector(unsigned(counter) + 1);
