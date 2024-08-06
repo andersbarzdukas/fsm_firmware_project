@@ -33,8 +33,8 @@ library UNISIM;
 use UNISIM.VComponents.all;
 
 entity fsm_firmware_project_top is
-    Port ( clk_p : in STD_LOGIC;
-           clk_n : in STD_LOGIC );
+    Port ( clk_in_p : in STD_LOGIC;
+           clk_in_n : in STD_LOGIC );
 end fsm_firmware_project_top;
 
 
@@ -63,6 +63,8 @@ architecture Behavioral of fsm_firmware_project_top is
 
 SIGNAL clk_buf : STD_LOGIC := 'U';
 SIGNAL clk_unbuf : STD_LOGIC := 'U';
+SIGNAL clk_10MHz : STD_LOGIC := 'U';
+SIGNAL clk_40MHz : STD_LOGIC := 'U';
 SIGNAL RSTA: STD_LOGIC := '0';
 SIGNAL ENA: STD_LOGIC := '0';
 SIGNAL WEA: STD_LOGIC_VECTOR(0 DOWNTO 0) := (OTHERS => '0');
@@ -75,6 +77,9 @@ SIGNAL RESET_SIGNAL: STD_LOGIC := '1';
 SIGNAL COUNTER_RESET: STD_LOGIC := '0';
 SIGNAL COUNTER_SIGNAL: STD_LOGIC_VECTOR(3 DOWNTO 0) := (OTHERS => '0');
 SIGNAL MAX_ADDR_REACHED: STD_LOGIC := '0';
+
+SIGNAL ILA_PROBE_2 : STD_LOGIC_VECTOR(15 DOWNTO 0) := (OTHERS => '0');
+SIGNAL VIO_RESET : STD_LOGIC := 'U';
 
 --Declaration of FSM type. In VHDL you can define your own type and the values they may take
 --For information about this please see: https://fpgatutorial.com/vhdl-records-arrays-and-custom-types/
@@ -95,11 +100,37 @@ COMPONENT blk_mem_gen_0
   );
 END COMPONENT;
 
+COMPONENT ila_0
+  PORT(
+    CLK : IN STD_LOGIC;
+    PROBE0 : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
+    PROBE1 : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
+    PROBE2 : IN STD_LOGIC_VECTOR(15 DOWNTO 0)
+  );
+END COMPONENT;
+
+COMPONENT vio_0
+  PORT(
+    CLK : IN STD_LOGIC;
+    PROBE_OUT0 : OUT STD_LOGIC
+  );
+END COMPONENT;
+
+
+COMPONENT clk_wiz_0
+  PORT(
+    CLK_IN1 : IN STD_LOGIC;
+    RESET : IN STD_LOGIC;
+    CLK_OUT1 : OUT STD_LOGIC;
+    CLK_OUT2 : OUT STD_LOGIC
+  );
+END COMPONENT;
+
 
 begin
 
 --Added a buffered clock signal
-IBUFGDS_u : IBUFDS port map (I => clk_p,IB => clk_n,O => clk_unbuf);
+IBUFGDS_u : IBUFDS port map (I => clk_in_p,IB => clk_in_n,O => clk_unbuf);
 u_bufg: bufg PORT map(i => clk_unbuf, o => clk_buf);
  
 --Instatiation of the blk_mem_generator
@@ -113,16 +144,51 @@ port map(
   DOUTA => DOUTA,
   CLKA => CLK_BUF
 );
- 
+
+--Defines the ILA and the signals that we want to track
+u_ila_0 : ila_0
+port map(
+  clk => clk_40MHz,
+  probe0 => dina,
+  probe1 => douta,
+  probe2 => ila_probe_2
+);
+
+--Defines the VIO and declares a reset signal
+u_vio_0 : vio_0
+port map(
+  clk => clk_buf,
+  probe_out0 => vio_reset
+);
+
+u_clk_wiz_0 : clk_wiz_0
+port map(
+  clk_in1 => clk_unbuf,
+  reset => '0',
+  clk_out1 => clk_10MHz,
+  clk_out2 => clk_40MHz
+);
+
+--We want to track a lot of different signals which can be bundled into one std_logic_vector.
+--Later we can use a .tcl script to unpack these.
+ila_probe_2(3 downto 0) <= ADDRA;
+ila_probe_2(4 downto 4) <= wea;
+ila_probe_2(5) <= ena;
+ila_probe_2(6 downto 5) <= "00" when FSM_STATE=IDLE_STATE else 
+                           "01" when FSM_STATE=WRITE_STATE else
+                           "10" when FSM_STATE=READ_STATE else
+                           "11";
+ila_probe_2(7) <= reset_signal;
+ila_probe_2(8) <= vio_reset;                          
  
 --Want a process that counts from 0 to the depth of the BRAM
 --Also connect the counter value to signals that will be incremented
-counter_address : process(clk_buf) 
+counter_address : process(clk_buf,clk_10Mhz) 
 --This variable is purposely at the wrong length. Think about if you want to use an integer or how long your vector should be!
 variable counter : std_logic_vector(4 downto 0) := (others => '0');
 begin 
   --Within this if statement add the logic for the counter
-  if(rising_edge(clk_buf)) then 
+  if(rising_edge(clk_10MHz)) then 
     if(counter_reset='1') then 
         counter := (others => '0');
     elsif(not_counting='1') then
@@ -138,19 +204,23 @@ end process;
 
 --Define the logic of the FSM machine in the process(es) below.
 --Please refer back to the FSM reference on line 54
-fsm_state_change : process(clk_buf)
+fsm_state_change : process(clk_10MHz)
 begin
-  if rising_edge(clk_buf) then
+  if rising_edge(clk_10MHz) then
     fsm_state <= next_state;
   end if;
 end process; 
 
-fsm_logic : process(clk_buf)
+fsm_logic : process(fsm_state,reset_signal,vio_reset,max_addr_reached,counter_reset,wea,ena,not_counting)
 begin
-  if rising_edge(clk_buf) then
+  --if rising_edge(clk_10MHz) then
+    --combined_reset <= reset_signal or vio_reset;
+    next_state <= fsm_state;
+  
     case fsm_state is
     when IDLE_STATE => 
-        if(reset_signal = '1') then
+        --if(combined_reset) then
+        if(reset_signal = '1' or vio_reset='1') then
             next_state <= WRITE_STATE;
         else 
             next_state <= IDLE_STATE;
@@ -177,7 +247,7 @@ begin
         
         dina <= (others => '0');
         addra <= counter_signal;
-    
+        
     when WRITE_STATE =>
         
         if(not_counting='1' and max_addr_reached='0') then 
@@ -202,9 +272,14 @@ begin
         addra <= counter_signal;
     
     when OTHERS =>
+        next_state <= idle_state;
  
     end case;
-  end if;
+    
+    if(vio_reset='1') then 
+      next_state <= idle_state;
+    end if;
+  --end if;
 end process; 
 
 --At this point stop and try the simulation! Are you seeing the correct behavior? If not what signals are wrong and where are they set? 
