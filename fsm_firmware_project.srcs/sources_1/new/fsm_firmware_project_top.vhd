@@ -269,7 +269,7 @@ begin
 		
     when READ_STATE =>
 		dina <= (others => '0');
-        addra <= (15-counter_signal);
+        addra <= (counter_signal);
         if (reset_signal = '1') then
             wea <= "0";
             ena <= '0';
