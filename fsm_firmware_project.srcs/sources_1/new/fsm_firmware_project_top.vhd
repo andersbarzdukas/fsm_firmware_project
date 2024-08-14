@@ -59,15 +59,18 @@ architecture Behavioral of fsm_firmware_project_top is
 
 SIGNAL clk_buf : STD_LOGIC := '0';
 SIGNAL RSTA: STD_LOGIC := '0';
+SIGNAL RST_IDLE: STD_LOGIC := '0';
 SIGNAL ENA: STD_LOGIC := '1';
 SIGNAL WEA: STD_LOGIC_VECTOR(0 DOWNTO 0) := (OTHERS => '0');
 SIGNAL ADDRA: STD_LOGIC_VECTOR(3 DOWNTO 0) := (OTHERS => '0');
 SIGNAL DINA: STD_LOGIC_VECTOR(15 DOWNTO 0) := (OTHERS => '0');
 SIGNAL DOUTA: STD_LOGIC_VECTOR(15 DOWNTO 0);
+SIGNAL START_COUNTING: STD_LOGIC := '0';
 
 SIGNAL VIO_RESET: STD_LOGIC_VECTOR(0 DOWNTO 0);
 
 SIGNAL COUNTER_SIGNAL: STD_LOGIC_VECTOR(3 DOWNTO 0) := (OTHERS => '0');
+SIGNAL COUNTER_IDLE_VEC : STD_LOGIC_VECTOR(3 DOWNTO 0) := (OTHERS => '0');
 
 SIGNAL ILA_PROBE_2 : STD_LOGIC_VECTOR(15 DOWNTO 0) := (OTHERS => '0');
 
@@ -75,7 +78,7 @@ SIGNAL ILA_PROBE_2 : STD_LOGIC_VECTOR(15 DOWNTO 0) := (OTHERS => '0');
 --For information about this please see: https://fpgatutorial.com/vhdl-records-arrays-and-custom-types/
 TYPE FSM_STATES IS (IDLE_STATE, READ_STATE, WRITE_STATE);
 SIGNAL FSM_STATE : FSM_STATES := IDLE_STATE;
-
+SIGNAL NEXT_STATE : FSM_STATES := IDLE_STATE;
 
 --This is the ipcore used for the BRAM
 COMPONENT blk_mem_gen_0 
@@ -164,8 +167,10 @@ begin
      -- Counter should reset when the RSTA signal is received
      if RSTA = '1' or vio_reset(0) = '1' then
              counter := (others => '0');
-     else  -- Counter will count up for each clock cycle
+     elsif(start_counting='1') then  -- Counter will count up for each clock cycle
              counter := std_logic_vector(unsigned(counter) + 1);
+     else
+             counter := counter;
      end if;
      
      -- Now assign counter to the counter_signal, which will get passed to Addra
@@ -173,105 +178,156 @@ begin
   end if;
 end process;
 
+---------------------------------------------------------------------------
+--LOGIC for IDLE_COUNTER
+---------------------------------------------------------------------------
+counter_idle : process(clk_buf)
+
+variable idle_counter : std_logic_vector(3 downto 0) := (others => '0');
+
+begin
+  if(rising_edge(clk_buf)) then
+     if RST_IDLE = '1' then
+        idle_counter := (others => '0');
+     else
+        idle_counter := std_logic_vector(unsigned(idle_counter) + 1);
+     end if;
+     
+     COUNTER_IDLE_VEC <= idle_counter;
+     
+  end if;
+end process;
+---------------------------------------------------------------------------
 --Define the logic of the FSM machine in the process(es) below.
---Please refer back to the FSM reference on line 54
-fsm_logic : process(clk_buf)
+---------------------------------------------------------------------------
+-- This process is the synchronous part of the FSM (i.e clocked)
+-- It contains the logic for the next state
+fsm_state_change: process(clk_buf)
 begin
   if rising_edge(clk_buf) then
+    fsm_state <= next_state;
+  end if;
+end process;
+
+--This process is the asynchronous part of the FSM (i.e. not clocked)
+--It is a combinatorial process that defines 
+fsm_logic : process(counter_signal, start_counting, counter_idle_vec, RSTA)
+begin
+  --if rising_edge(clk_buf) then
       case FSM_STATE is
-           when IDLE_STATE =>
-                dina <= "0000000000000000";
-                addra <= counter_signal;
-                ENA <= '0';
-                WEA <= "0";
-                -- This is done to allow the state to wait for 16 clock cycles before moving back to WRITE_STATE
-                RSTA <= '0';
-                -- Wait for 16 clock cycles
-                if unsigned(ADDRA) = 15 then
-                    RSTA <= '1'; -- This will reset the counter
-                    FSM_STATE <= WRITE_STATE;
-                end if;    
+      when IDLE_STATE =>
+           ------------------------------------------------------------
+           --OLD CODE
+           --dina <= "0000000000000000";
+           --addra <= counter_signal;
+           --ENA <= '0';
+           --WEA <= "0";
+           -- This is done to allow the state to wait for 16 clock cycles before moving back to WRITE_STATE
+           --RSTA <= '0';
+           -- Wait for 16 clock cycles
+           --if unsigned(ADDRA) = 15 then
+           --    RSTA <= '1'; -- This will reset the counter
+           --    NEXT_STATE <= WRITE_STATE;
+           --end if;
+           --------------------------------------------------------------
+           -- Stay in the IDLE state for a fixed amount of time, then go to WRITE state
+           ENA <= '0';
+           WEA <= "0";
+           RSTA <= '1';
+           start_counting <= '0';
+           -- Wait for the specified number of clock cycles
+           if unsigned(COUNTER_IDLE_VEC) = 8 then
+                -- Reset IDLE counter
+                RST_IDLE <= '1';
+                NEXT_STATE <= WRITE_STATE;
+           end if;
                      
-           when READ_STATE =>
-                dina <= "0000000000000000";
-                addra <= counter_signal;
-                -- Again, flip the RSTA signal back to zero so the counter can increment
-                RSTA <= '0';
-                -- Keep the ENA signal true, but flip the WEA signal for reading block ram
-                WEA <= "0";
-                if unsigned(ADDRA) = 15 then -- once we have read everything
-                   -- Go back to IDLE state
-                   FSM_STATE <= IDLE_STATE;
-                end if;
+      when READ_STATE =>
+           dina <= "0000000000000000";
+           addra <= counter_signal;
+           -- Again, flip the RSTA signal back to zero so the counter can increment
+           RSTA <= '0';
+           -- Keep the ENA signal true, but flip the WEA signal for reading block ram
+           WEA <= "0";
+           start_counting <= '1';
+           if unsigned(ADDRA) = 15 then -- once we have read everything
+              -- Go back to IDLE state
+              RSTA <= '1';
+              start_counting <= '0';
+              NEXT_STATE <= IDLE_STATE;
+              RST_IDLE <= '0';
+           end if;
                 
                 --dina <= "0000000000000000";
                 
-           when WRITE_STATE =>
-                addra <= counter_signal;
-                -- Disable the reset signal so the counter moves again
-                RSTA <= '0';
-                -- Do something with ENA and WEA to put us into the write state for the block RAM
-                -- This enables data to be written to the block RAM
-                ENA <= '1';
-                -- This is the byte-wide write enable
-                WEA <= "1";
-                if unsigned(ADDRA) = 0 then
-                   DINA <= "0000000000000001";
-                end if;
-                if unsigned(ADDRA) = 1 then
-                   DINA <= "0000000000000010";
-                end if;
-                if unsigned(ADDRA) = 2 then
-                   DINA <= "0000000000000100";
-                end if;
-                if unsigned(ADDRA) = 3 then
-                   DINA <= "0000000000001000";
-                end if;
-                if unsigned(ADDRA) = 4 then
-                   DINA <= "0000000000010000";
-                end if;
-                if unsigned(ADDRA) = 5 then
-                   DINA <= "0000000000100000";
-                end if;
-                if unsigned(ADDRA) = 6 then
-                   DINA <= "0000000001000000";
-                end if;
-                if unsigned(ADDRA) = 7 then
-                   DINA <= "0000000010000000";
-                end if;
-                if unsigned(ADDRA) = 8 then
-                   DINA <= "0000000100000000";
-                end if;
-                if unsigned(ADDRA) = 9 then
-                   DINA <= "0000001000000000";
-                end if;
-                if unsigned(ADDRA) = 10 then
-                   DINA <= "0000010000000000";
-                end if;
-                if unsigned(ADDRA) = 11 then
-                   DINA <= "0000100000000000";
-                end if;
-                if unsigned(ADDRA) = 12 then
-                   DINA <= "0001000000000000";
-                end if;
-                if unsigned(ADDRA) = 13 then
-                   DINA <= "0010000000000000";
-                end if;
-                if unsigned(ADDRA) = 14 then
-                   DINA <= "0100000000000000";
-                end if;
-                if unsigned(ADDRA) = 15 then
-                   DINA <= "1000000000000000";
-                   -- Issue reset signal again to reset the counter for the read state
-                   RSTA <= '1';
-                   -- Go to the read state
-                   FSM_STATE <= READ_STATE;
-                end if;
+      when WRITE_STATE =>
+           addra <= counter_signal;
+           -- Disable the reset signal so the counter moves again
+           RSTA <= '0';
+           start_counting <= '1';
+           -- Do something with ENA and WEA to put us into the write state for the block RAM
+           -- This enables data to be written to the block RAM
+           ENA <= '1';
+           -- This is the byte-wide write enable
+           WEA <= "1";
+           if unsigned(ADDRA) = 0 then
+              DINA <= "0000000000000001";
+           end if;
+           if unsigned(ADDRA) = 1 then
+              DINA <= "0000000000000010";
+           end if;
+           if unsigned(ADDRA) = 2 then
+              DINA <= "0000000000000100";
+           end if;
+           if unsigned(ADDRA) = 3 then
+              DINA <= "0000000000001000";
+           end if;
+           if unsigned(ADDRA) = 4 then
+              DINA <= "0000000000010000";
+           end if;
+           if unsigned(ADDRA) = 5 then
+              DINA <= "0000000000100000";
+           end if;
+           if unsigned(ADDRA) = 6 then
+              DINA <= "0000000001000000";
+           end if;
+           if unsigned(ADDRA) = 7 then
+              DINA <= "0000000010000000";
+           end if;
+           if unsigned(ADDRA) = 8 then
+              DINA <= "0000000100000000";
+           end if;
+           if unsigned(ADDRA) = 9 then
+              DINA <= "0000001000000000";
+           end if;
+           if unsigned(ADDRA) = 10 then
+              DINA <= "0000010000000000";
+           end if;
+           if unsigned(ADDRA) = 11 then
+              DINA <= "0000100000000000";
+           end if;
+           if unsigned(ADDRA) = 12 then
+              DINA <= "0001000000000000";
+           end if;
+           if unsigned(ADDRA) = 13 then
+              DINA <= "0010000000000000";
+           end if;
+           if unsigned(ADDRA) = 14 then
+              DINA <= "0100000000000000";
+           end if;
+           if unsigned(ADDRA) = 15 then
+              DINA <= "1000000000000000";
+              -- Issue reset signal again to reset the counter for the read state
+              RSTA <= '1';
+              start_counting <= '0';
+              -- Go to the read state
+              NEXT_STATE <= READ_STATE;
+           end if;
                 
                 --dina <= "000000000000000";
            
       end case;  
-  end if;
+  --end if;
 end process; 
 
 
